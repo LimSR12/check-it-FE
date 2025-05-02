@@ -22,7 +22,7 @@ function PostForm() {
         try {
             const response = await axios.post('http://localhost:8080/api/posts', formData, {
                 headers: {
-                'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data',
                 },
             });
             setMessage(response.data.message || '업로드 성공!');
