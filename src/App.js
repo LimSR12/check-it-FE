@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PostList from './components/PostList';
-import PostForm from './components/PostForm'; // 작성 컴포넌트
+import PostForm from './components/PostForm';
+import PostDetail from './components/PostDetail';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<PostList />} />
           <Route path="/write" element={<PostForm />} />
+          <Route path="/posts/:id" element={<PostDetail />} />
         </Routes>
       </div>
     </Router>

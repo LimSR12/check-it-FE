@@ -19,41 +19,60 @@ function PostList() {
     }, []);
 
     return (
-        <div>
+    <div style={{ padding: '20px' }}>
         <div style={{ marginBottom: '20px', textAlign: 'right' }}>
-            <button onClick={() => navigate('/write')}>✍️ 게시글 작성하기</button>
+        <button onClick={() => navigate('/write')}>✍️ 게시글 작성하기</button>
         </div>
-
+    
         <h2>📋 전체 게시글</h2>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-
+    
         {posts.length === 0 ? (
-            <p>등록된 게시글이 없습니다.</p>
+        <p>등록된 게시글이 없습니다.</p>
         ) : (
-            posts.map(post => (
-            <div key={post.id} style={{
+        <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '20px'
+        }}>
+            {posts.map(post => (
+            <div
+                key={post.id}
+                onClick={() => navigate(`/posts/${post.id}`)}
+                style={{
+                cursor: 'pointer',
                 border: '1px solid #ccc',
-                padding: '10px',
-                marginBottom: '15px',
                 borderRadius: '8px',
-                maxWidth: '500px'
-            }}>
+                padding: '10px',
+                backgroundColor: '#fff',
+                boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+                transition: 'transform 0.2s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1.0)'}
+            >
                 <h3>{post.title}</h3>
                 <p><strong>작성자:</strong> {post.memberEmail}</p>
-                <p>{post.content}</p>
                 {post.imageUrl && (
                 <img
                     src={`http://localhost:8080${post.imageUrl}`}
                     alt="post"
-                    style={{ width: '100%', maxHeight: '300px', objectFit: 'cover' }}
+                    style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '4px' }}
                 />
                 )}
-                <small>{new Date(post.createdAt).toLocaleString()}</small>
+                <p style={{ fontSize: '14px', color: '#555' }}>
+                {post.content.length > 60 ? post.content.slice(0, 60) + '...' : post.content}
+                </p>
+                <small style={{ color: '#999' }}>
+                {new Date(post.createdAt).toLocaleString()}
+                </small>
             </div>
-            ))
-        )}
+            ))}
         </div>
+        )}
+    </div>
     );
+      
 }
 
 export default PostList;
