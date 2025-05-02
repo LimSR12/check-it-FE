@@ -1,43 +1,92 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+`;
+
+const BackButton = styled.button`
+  margin-bottom: 20px;
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
+const Title = styled.h2`
+  margin-bottom: 10px;
+`;
+
+const Author = styled.p`
+  font-weight: bold;
+`;
+
+const Content = styled.p`
+  margin-top: 10px;
+  line-height: 1.6;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin: 20px 0;
+`;
+
+const DateText = styled.small`
+  color: #888;
+`;
+
+const ErrorText = styled.p`
+  color: red;
+`;
 
 function PostDetail() {
-    const { id } = useParams(); // URL의 :id 파라미터 추출
-    const navigate = useNavigate();
-    const [post, setPost] = useState(null);
-    const [error, setError] = useState('');
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [post, setPost] = useState(null);
+  const [error, setError] = useState('');
 
-    useEffect(() => {
-        axios.get(`/api/posts/${id}`)
-        .then(res => {
-            setPost(res.data.data); // APIResponse 기준
-        })
-        .catch(err => {
-            console.error(err);
-            setError('게시글을 불러오지 못했습니다.');
-        });
-    }, [id]);
+  useEffect(() => {
+    axios.get(`/api/posts/${id}`)
+      .then(res => {
+        setPost(res.data.data);
+      })
+      .catch(err => {
+        console.error(err);
+        setError('게시글을 불러오지 못했습니다.');
+      });
+  }, [id]);
 
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
-    if (!post) return <p>게시글 로딩 중...</p>;
+  if (error) return <ErrorText>{error}</ErrorText>;
+  if (!post) return <p>게시글 로딩 중...</p>;
 
-    return (
-        <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-        <button onClick={() => navigate(-1)} style={{ marginBottom: '20px' }}>← 뒤로가기</button>
-        <h2>{post.title}</h2>
-        <p><strong>작성자:</strong> {post.memberEmail}</p>
-        <p>{post.content}</p>
-        {post.imageUrl && (
-            <img
-            src={`http://localhost:8080${post.imageUrl}`}
-            alt="post"
-            style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
-            />
-        )}
-        <small>{new Date(post.createdAt).toLocaleString()}</small>
-        </div>
-    );
+  return (
+    <Container>
+      <BackButton onClick={() => navigate(-1)}>← 뒤로가기</BackButton>
+      <Title>{post.title}</Title>
+      <Author>작성자: {post.memberEmail}</Author>
+      <Content>{post.content}</Content>
+      {post.imageUrl && (
+        <Image
+          src={`http://localhost:8080${post.imageUrl}`}
+          alt="post"
+        />
+      )}
+      <DateText>{new Date(post.createdAt).toLocaleString()}</DateText>
+    </Container>
+  );
 }
 
 export default PostDetail;
